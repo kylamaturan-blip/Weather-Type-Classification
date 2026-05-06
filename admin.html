@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeatherNet Admin</title>
+
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#050814;
+    --card:rgba(255,255,255,0.05);
+    --accent:#00e5ff;
+    --accent2:#7c4dff;
+    --text:#e8f0ff;
+    --muted:#9aa4c7;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    display:flex;
+    background:radial-gradient(circle at top,#0b1230,#050814);
+    color:var(--text);
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:230px;
+    background:rgba(255,255,255,0.03);
+    padding:20px;
+    border-right:1px solid rgba(0,229,255,0.15);
+}
+
+.sidebar h2{
+    margin-bottom:25px;
+    color:var(--accent);
+}
+
+.nav-item{
+    padding:12px;
+    border-radius:10px;
+    margin:8px 0;
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    color:var(--muted);
+    transition:.3s;
+}
+
+.nav-item.active,
+.nav-item:hover{
+    background:rgba(0,229,255,0.12);
+    color:white;
+    box-shadow:0 0 10px rgba(0,229,255,0.4);
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+.topbar{
+    margin-bottom:20px;
+}
+
+/* HEADINGS FIX */
+.topbar h2{
+    text-align:left;
+    font-weight:600;
+}
+
+.card h3{
+    margin-bottom:12px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    text-align:left;
+}
+
+/* CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.card{
+    background:var(--card);
+    padding:15px;
+    border-radius:14px;
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(0,229,255,0.15);
+    transition:.3s;
+}
+
+.card:hover{
+    box-shadow:0 0 15px rgba(0,229,255,0.3);
+}
+
+.card h4{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.card h2{
+    margin-top:5px;
+}
+
+.icon{
+    float:right;
+    background:rgba(0,229,255,0.1);
+    color:var(--accent);
+    padding:10px;
+    border-radius:50%;
+    box-shadow:0 0 10px rgba(0,229,255,0.5);
+}
+
+/* ACTIVITY */
+.activity{
+    margin-top:20px;
+    background:var(--card);
+    padding:15px;
+    border-radius:14px;
+    border:1px solid rgba(0,229,255,0.1);
+}
+
+.activity-item{
+    margin:10px 0;
+}
+
+.activity-item small{
+    color:var(--muted);
+}
+
+/* TABLE FIX (IMPORTANT) */
+table{
+    width:100%;
+    margin-top:10px;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:10px;
+    border-bottom:1px solid rgba(0,229,255,0.1);
+    text-align:left; /* <-- ALIGN FIX */
+}
+
+/* HEADER STYLE */
+th{
+    color:var(--accent);
+    font-weight:600;
+}
+
+/* OPTIONAL: tighten header alignment */
+thead th{
+    padding-left:10px;
+}
+
+/* PAGE */
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚀 WeatherNet</h2>
+
+    <div class="nav-item active" onclick="showPage('dashboardPage',this)">
+        <i class='bx bx-home'></i> Dashboard
+    </div>
+
+    <div class="nav-item" onclick="showPage('usersPage',this)">
+        <i class='bx bx-user'></i> User Management
+    </div>
+
+    <div class="nav-item" onclick="showPage('logsPage',this)">
+        <i class='bx bx-cloud'></i> Weather Logs
+    </div>
+
+    <div class="nav-item" onclick="showPage('auditPage',this)">
+        <i class='bx bx-file'></i> Audit Trail
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="topbar">
+    <h2 id="pageTitle">Dashboard</h2>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="page active">
+
+<div class="cards">
+
+<div class="card">
+<i class='bx bx-data icon'></i>
+<h4>Total Weather Logs</h4>
+<h2 id="totalLogs">0</h2>
+</div>
+
+<div class="card">
+<i class='bx bx-group icon'></i>
+<h4>Registered Users</h4>
+<h2 id="totalUsers">0</h2>
+</div>
+
+<div class="card">
+<i class='bx bx-line-chart icon'></i>
+<h4>Average Confidence</h4>
+<h2 id="avgConf">0%</h2>
+</div>
+
+</div>
+
+<div class="activity">
+<h3>System Activity</h3>
+<div id="activityList"></div>
+</div>
+
+</div>
+
+<!-- USERS -->
+<div id="usersPage" class="page">
+<div class="card">
+<h3>User Management</h3>
+<table>
+<thead><tr><th>Email</th><th>Role</th></tr></thead>
+<tbody id="userTable"></tbody>
+</table>
+</div>
+</div>
+
+<!-- LOGS -->
+<div id="logsPage" class="page">
+<div class="card">
+<h3>Weather Logs</h3>
+<table>
+<thead>
+<tr><th>Temp</th><th>Humidity</th><th>Wind</th><th>Prediction</th><th>Confidence</th></tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
+</div>
+</div>
+
+<!-- AUDIT -->
+<div id="auditPage" class="page">
+<div class="card">
+<h3>Audit Trail</h3>
+<table>
+<thead><tr><th>Action</th><th>Time</th></tr></thead>
+<tbody id="auditTable"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
+  authDomain: "weathernet-27dc9.firebaseapp.com",
+  projectId: "weathernet-27dc9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* AUTH */
+onAuthStateChanged(auth,(user)=>{
+    if(!user) window.location.href="index.html";
+});
+
+/* PAGE SWITCH */
+window.showPage=(id,el)=>{
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+    el.classList.add("active");
+
+    document.getElementById("pageTitle").innerText=el.innerText;
+};
+
+/* LOGS */
+const logQ=query(collection(db,"weather_logs"),orderBy("timestamp","desc"));
+onSnapshot(logQ,(snap)=>{
+    let table=document.getElementById("logTable");
+    table.innerHTML="";
+    let total=0,sum=0;
+
+    snap.forEach(d=>{
+        let data=d.data();
+        total++;
+        sum+=parseFloat(data.confidence||0);
+
+        table.innerHTML+=`
+        <tr>
+        <td>${data.temp}</td>
+        <td>${data.humidity}</td>
+        <td>${data.wind}</td>
+        <td>${data.result}</td>
+        <td>${data.confidence}%</td>
+        </tr>`;
+    });
+
+    document.getElementById("totalLogs").innerText=total;
+    document.getElementById("avgConf").innerText=
+    total?(sum/total).toFixed(1)+"%":"0%";
+});
+
+/* USERS */
+onSnapshot(collection(db,"users"),(snap)=>{
+    let table=document.getElementById("userTable");
+    table.innerHTML="";
+    document.getElementById("totalUsers").innerText=snap.size;
+
+    snap.forEach(d=>{
+        let u=d.data();
+        table.innerHTML+=`
+        <tr>
+        <td>${u.email}</td>
+        <td>${u.role||"user"}</td>
+        </tr>`;
+    });
+});
+
+/* AUDIT + ACTIVITY */
+onSnapshot(collection(db,"audit_logs"),(snap)=>{
+    let table=document.getElementById("auditTable");
+    let activity=document.getElementById("activityList");
+
+    table.innerHTML="";
+    activity.innerHTML="";
+
+    let count=0;
+
+    snap.forEach(d=>{
+        let a=d.data();
+
+        table.innerHTML+=`
+        <tr>
+        <td>${a.action}</td>
+        <td>${a.time}</td>
+        </tr>`;
+
+        if(count<5){
+            activity.innerHTML+=`
+            <div class="activity-item">
+            • ${a.action}<br><small>${a.time}</small>
+            </div>`;
+        }
+        count++;
+    });
+});
+</script>
+
+</body>
+</html>

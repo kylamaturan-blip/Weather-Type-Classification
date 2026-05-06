@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeatherNet AI | Atmospheric Intelligence Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+    margin:0;
+    font-family:Inter;
+    background: radial-gradient(circle at top, #020617, #000);
+    color:white;
+    overflow-x:hidden;
+}
+
+/* GRID SPACE BACKGROUND */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,229,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.06) 1px, transparent 1px);
+    background-size:60px 60px;
+    pointer-events:none;
+}
+
+/* ================= LAYOUT ================= */
+
+.wrapper{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:1.2fr 2fr;
+    gap:25px;
+    padding:40px;
+}
+
+/* ================= LEFT PANEL ================= */
+
+.left-panel{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* TITLE */
+.title{
+    font-size:44px;
+    font-weight:800;
+    letter-spacing:2px;
+    background:linear-gradient(90deg,#00e5ff,#0066ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* SUBTEXT */
+.subtitle{
+    color:rgba(255,255,255,0.75);
+    font-size:14px;
+    line-height:1.8;
+    max-width:420px;
+}
+/* BUTTONS */
+.btn{
+    display:inline-block;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:600;
+    text-decoration:none;
+    transition:0.3s;
+    margin-right:10px;
+}
+
+.primary{
+    background:#00e5ff;
+    color:black;
+    box-shadow:0 0 25px #00e5ff;
+}
+
+.primary:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 35px #00e5ff;
+}
+
+.secondary{
+    border:1px solid #00e5ff;
+    color:#00e5ff;
+}
+
+.secondary:hover{
+    background:#00e5ff;
+    color:black;
+    transform:scale(1.05);
+}
+
+/* ================= CARD SYSTEM ================= */
+
+.card{
+    background:rgba(10,20,40,0.7);
+    border:1px solid rgba(0,229,255,0.15);
+    padding:20px 22px;
+    border-radius:16px;
+    backdrop-filter:blur(12px);
+    transition:0.3s;
+    min-height:140px;
+}
+
+/* HOVER EFFECT */
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#00e5ff;
+    box-shadow:0 0 25px rgba(0,229,255,0.2);
+}
+
+.card h3{
+    font-size:16px;
+    margin-bottom:8px;
+    font-weight:600;
+    letter-spacing:0.5px;
+}
+
+.card p + p{
+    margin-top:6px;
+}
+
+.btn{
+    font-size:13px;
+    letter-spacing:0.5px;
+}
+/* ================= RIGHT PANEL ================= */
+
+.right-panel{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.table-card{
+    grid-column:span 2;
+}
+
+/* ================= TABLE ================= */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+th{
+    color:#00e5ff;
+    text-align:left;
+}
+
+/* STATUS */
+.status{
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    background:rgba(0,255,120,0.1);
+    color:#00ff9d;
+}
+
+/* ================= HOVER ICON EFFECT ================= */
+
+.icon{
+    transition:0.3s;
+}
+
+.card:hover .icon{
+    transform:rotate(8deg) scale(1.1);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+    .wrapper{
+        grid-template-columns:1fr;
+    }
+}
+
+.card p{
+    font-size:13.5px;
+    line-height:1.7;
+    color:rgba(255,255,255,0.75);
+    margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<!-- ================= LEFT CONTROL PANEL ================= -->
+<div class="left-panel">
+
+    <div class="title">WEATHERNET SYSTEM</div>
+
+<div class="subtitle">
+    A web-based weather classification system that analyzes atmospheric data
+    and predicts weather conditions such as Sunny, Rainy, Snowy, and Foggy.
+    <br><br>
+    The system uses machine learning models trained from real-world datasets
+    to provide accurate and reliable weather predictions for users.
+</div>
+
+    <div class="card">
+        <h3>📊 System Status</h3>
+        <p style="margin-top:10px; font-size:13px; color:rgba(255,255,255,0.7);">
+The system is currently operational and all modules are functioning properly.
+Users can perform predictions, store data, and access records without interruption.
+</p>
+<p>🟢 System: Running</p>
+<p>🤖 Prediction Model: Active</p>
+<p>💾 Database (Firebase): Connected</p>
+<p>📂 Dataset: Loaded</p>
+    </div>
+
+    <div>
+        <a href="login_register.html" class="btn primary">LOGIN TO SYSTEM</a>
+    </div>
+
+    <div class="card">
+        <h3>📘 System Overview</h3>
+<p>
+This system collects weather-related inputs such as temperature,
+humidity, wind speed, pressure, and visibility, then processes them
+using a trained machine learning model to classify the current weather condition.
+</p>
+    </div>
+
+</div>
+
+<!-- ================= RIGHT DASHBOARD ================= -->
+<div class="right-panel">
+
+    <div class="card">
+        <h3 class="icon">🌦 Weather Input Module</h3>
+<p>
+Accepts user-provided atmospheric data such as temperature, humidity,
+wind speed, pressure, and visibility. These inputs are validated and
+prepared before being sent to the classification model.
+</p>
+<p>
+Ensures that all data entries are within acceptable ranges to maintain
+prediction accuracy and system reliability.
+</p>
+    </div>
+
+    <div class="card">
+        <h3 class="icon">🤖 Classification Model</h3>
+<p>
+Uses a trained machine learning model to classify weather conditions
+into four categories: Sunny, Rainy, Snowy, and Foggy.
+</p>
+<p>
+The model analyzes patterns from the dataset and generates predictions
+based on the relationship between atmospheric variables.
+</p>
+    </div>
+
+    <div class="card">
+        <h3 class="icon">💾 Data Storage</h3>
+<p>
+All prediction results and input data are stored in a Firebase database
+for future reference and analysis.
+</p>
+<p>
+This allows users to track previous predictions, review logs, and
+monitor system performance over time.
+</p>
+    </div>
+
+    <div class="card">
+        <h3 class="icon">📊 Dataset Integration</h3>
+<p>
+The system is trained using a weather classification dataset sourced
+from Kaggle, containing multiple atmospheric features and labeled outputs.
+</p>
+<p>
+This dataset helps the model learn patterns and improve its ability
+to classify weather conditions accurately.
+</p>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card table-card">
+
+        <h3>📊 System Features</h3>
+<p style="margin-bottom:10px; color:rgba(255,255,255,0.7); font-size:13px;">
+Below are the core functionalities of the system that enable weather
+classification, data storage, and user interaction.
+</p>
+        <table>
+            <tr>
+    <td>Weather Classification</td>
+    <td>Predicts weather type (Sunny, Rainy, Snowy, Foggy)</td>
+    <td><span class="status">ACTIVE</span></td>
+</tr>
+
+<tr>
+    <td>Data Logging</td>
+    <td>Saves prediction results to Firebase</td>
+    <td><span class="status">ACTIVE</span></td>
+</tr>
+
+<tr>
+    <td>Search & Records</td>
+    <td>View and filter stored weather data</td>
+    <td><span class="status">ACTIVE</span></td>
+</tr>
+
+<tr>
+    <td>User Authentication</td>
+    <td>Login and registration system</td>
+    <td><span class="status">SECURED</span></td>
+</tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeatherNet Access</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    background: radial-gradient(circle at top, #020617, #000);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* GRID BACKGROUND */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+    background-size:60px 60px;
+}
+
+/* ===== MAIN BOX ===== */
+.container{
+    width: 90%;
+    max-width: 720px;
+    min-height: 400px;
+    display:flex;
+    border-radius:20px;
+    overflow:hidden;
+    background: rgba(10,20,40,0.6);
+    backdrop-filter: blur(12px);
+    border:1px solid rgba(0,229,255,0.15);
+}
+
+/* ===== LEFT ===== */
+.left{
+    width:45%;
+    background: linear-gradient(160deg,#021b2f,#0b3a53);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:30px;
+    border-top-right-radius:100px;
+    border-bottom-right-radius:100px;
+}
+
+.left h2{
+    margin-bottom:10px;
+    font-weight:600;
+}
+
+.left p{
+    font-size:13px;
+    opacity:0.8;
+}
+
+.left button{
+    margin-top:20px;
+    padding:10px 20px;
+    border-radius:20px;
+    border:1px solid #00e5ff;
+    background:transparent;
+    color:#00e5ff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.left button:hover{
+    background:#00e5ff;
+    color:black;
+}
+
+/* ===== RIGHT ===== */
+.right{
+    width:55%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.form-box{
+    width:70%;
+}
+
+/* TITLE */
+.form-box h2{
+    margin-bottom:20px;
+    color:#00e5ff;
+}
+
+/* INPUT */
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.05);
+    color:white;
+}
+
+.input-group input:focus{
+    outline:none;
+    border-color:#00e5ff;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(90deg,#00e5ff,#0066ff);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* SWITCH TEXT */
+.toggle{
+    margin-top:10px;
+    font-size:13px;
+    text-align:center;
+    color:#00e5ff;
+    cursor:pointer;
+}
+
+/* HIDDEN */
+#registerForm{
+    display:none;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left">
+        <h2>Welcome to WeatherNet</h2>
+        <p>
+        Securely access your weather classification system and manage
+        atmospheric data with AI-powered insights.
+        </p>
+        <button onclick="toggleForm()">Create Account</button>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right">
+        <div class="form-box">
+
+            <!-- LOGIN -->
+            <form id="loginForm" autocomplete="off">
+                <h2>Login</h2>
+
+                <div class="input-group">
+                    <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+
+                <div class="toggle" onclick="resetPassword()">
+        Forgot Password?
+    </div>
+
+                <div class="toggle" onclick="toggleForm()">
+                    Don't have an account? Register
+                </div>
+            </form>
+
+            <!-- REGISTER -->
+            <form id="registerForm" autocomplete="off">
+                <h2>Register</h2>
+
+                <div class="input-group">
+                    <input type="text" id="regName" placeholder="Full Name">
+                </div>
+
+                <div class="input-group">
+                    <input type="email" id="regEmail" placeholder="Enter your email" autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="regPassword" placeholder="Create password" autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn">Create Account</button>
+
+                <div class="toggle" onclick="toggleForm()">
+                    Already have an account? Login
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+// toggle login/register
+function toggleForm(){
+    const login = document.getElementById("loginForm");
+    const register = document.getElementById("registerForm");
+
+    if(register.style.display === "none" || register.style.display === ""){
+        register.style.display = "block";
+        login.style.display = "none";
+    } else {
+        register.style.display = "none";
+        login.style.display = "block";
+    }
+}
+</script>
+
+<!-- 🔥 FIREBASE (SA ILALOM JUD) -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { sendPasswordResetEmail } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
+  authDomain: "weathernet-27dc9.firebaseapp.com",
+  projectId: "weathernet-27dc9",
+  storageBucket: "weathernet-27dc9.firebasestorage.app",
+  messagingSenderId: "178207562733",
+  appId: "1:178207562733:web:99e3ed4018873a4efc65e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* CLEAR INPUTS */
+window.onload = () => {
+  document.getElementById("loginEmail").value = "";
+  document.getElementById("loginPassword").value = "";
+  document.getElementById("regName").value = "";
+  document.getElementById("regEmail").value = "";
+  document.getElementById("regPassword").value = "";
+};
+
+/* REGISTER */
+document.getElementById("registerForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value.trim();
+
+  if(!name || !email || !password){
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try{
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+
+    // SAVE USER DATA SA FIRESTORE
+    await setDoc(doc(db, "users", userCred.user.uid), {
+    name: name,
+    email: email,
+    role: "user", // ✅ ADD THIS LINE
+    createdAt: new Date()
+    });
+
+    alert("Registered Successfully!");
+    toggleForm();
+
+  }catch(err){
+    alert("Error: " + err.message);
+  }
+});
+
+/* LOGIN */
+document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  if(!email || !password){
+    alert("Please enter email and password");
+    return;
+  }
+
+  try{
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+
+    let docSnap = await getDoc(doc(db, "users", userCred.user.uid));
+
+if(!docSnap.exists()){
+    await setDoc(doc(db, "users", userCred.user.uid), {
+        email: email,
+        role: "user",
+        createdAt: new Date()
+    });
+
+    docSnap = await getDoc(doc(db, "users", userCred.user.uid));
+}
+
+const userData = docSnap.data();
+const role = userData.role || "user";
+
+localStorage.setItem("role", role);
+
+if(role === "admin"){
+    window.location.href = "admin.html";
+} else {
+    window.location.href = "dashboard.html";
+}
+
+localStorage.setItem("role", role);
+
+if(role === "admin"){
+    window.location.href = "admin.html";
+} else {
+    window.location.href = "dashboard.html";
+}
+
+  }catch(err){
+    Swal.fire({
+      icon: "error",
+      title: "Login Failed",
+      text: err.message
+    });
+  }
+});
+
+window.resetPassword = async () => {
+  const email = document.getElementById("loginEmail").value;
+
+  if(!email){
+    alert("Enter your email first");
+    return;
+  }
+
+  try{
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent!");
+  }catch(err){
+    alert(err.message);
+  }
+};
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

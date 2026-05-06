@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather Data Records</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    background:radial-gradient(circle at top, #0b1230, #050814);
+    color:#e8f0ff;
+    font-family:'Inter',sans-serif;
+    padding:30px;
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:15px;
+    backdrop-filter:blur(15px);
+}
+
+/* TABLE */
+.table-container{
+    margin-top:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+}
+
+th, td{
+    padding:10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+th{
+    color:rgba(255,255,255,0.6);
+}
+
+tr:hover{
+    background:rgba(0,229,255,0.05);
+}
+
+/* BADGE */
+.badge{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.sunny{ background:#f9a825; color:black; }
+.cloudy{ background:#78909c; }
+.rainy{ background:#1e88e5; }
+.stormy{ background:#e53935; }
+
+button{
+    margin-bottom:15px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#00e5ff;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="goBack()">← Back to Dashboard</button>
+
+<div class="card">
+<h2>Weather Data Records</h2>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Temp</th>
+<th>Humidity</th>
+<th>Wind</th>
+<th>Precip</th>
+<th>Cloud</th>
+<th>Pressure</th>
+<th>UV</th>
+<th>Season</th>
+<th>Visibility</th>
+<th>Type</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "weathernet-27dc9.firebaseapp.com",
+  projectId: "weathernet-27dc9",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const params = new URLSearchParams(window.location.search);
+const searchValue = params.get("search")?.toLowerCase() || "";
+async function load(){
+    const q = await getDocs(collection(db,"weather_logs"));
+    let body = document.getElementById("tableBody");
+
+    let rows = "";
+
+q.forEach(doc=>{
+    let d = doc.data();
+
+    // 🔍 FILTER LOGIC
+    if(searchValue && d.result.toLowerCase() !== searchValue){
+    return;
+    }
+    let cls = d.result?.toLowerCase() || "sunny";
+
+    rows += `
+    <tr>
+    <td>${d.location}</td>
+    <td>${d.temp}</td>
+    <td>${d.humidity}%</td>
+    <td>${d.wind}</td>
+    <td>${d.precip}%</td>
+    <td>${d.cloud}</td>
+    <td>${d.pressure}</td>
+    <td>${d.uv}</td>
+    <td>${d.season}</td>
+    <td>${d.visibility}</td>
+    <td><span class="badge ${cls}">${d.result}</span></td>
+    </tr>
+    `;
+});
+
+body.innerHTML = rows;
+}
+
+load();
+
+window.goBack = ()=>{
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

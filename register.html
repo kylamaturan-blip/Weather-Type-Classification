@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register Form</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="short icon" href="favicon.png" type="image/png">
+</head>
+
+<body>
+
+<!-- ☁️ ORIGINAL CLOUDS (UNCHANGED) -->
+<img class="cloud" src="https://cdn-icons-png.flaticon.com/512/414/414825.png" style="top:20%;">
+<img class="cloud" src="https://cdn-icons-png.flaticon.com/512/414/414927.png" style="top:60%; animation-delay:10s;">
+
+<!-- REGISTER BOX -->
+<div class="login-box">
+    <img src="logo.png" class="logo">
+
+    <form onsubmit="register(event)">
+
+        <div class="input-box">
+            <input type="text" id="lastname" placeholder="Last Name" required>
+            <span class="icon">👤</span>
+        </div>
+
+        <div class="input-box">
+            <input type="text" id="firstname" placeholder="First Name" required>
+            <span class="icon">👤</span>
+        </div>
+
+        <div class="input-box">
+            <input type="text" id="middlename" placeholder="Middle Name" required>
+            <span class="icon">👤</span>
+        </div>
+
+        <div class="input-box">
+            <input type="date" id="birthdate" required>
+            <span class="icon">📅</span>
+        </div>
+
+        <div class="input-box">
+            <select id="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <span class="icon dropdown-icon">▼</span>
+        </div>
+
+        <div class="input-box">
+            <input type="email" id="emai1" placeholder="Email Address" required>
+            <span class="icon">📧</span>
+        </div>
+
+        <div class="input-box">
+            <input type="text" id="username" placeholder="Username" required>
+            <span class="icon">👤</span>
+        </div>
+
+        <div class="input-box">
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="icon">🔒</span>
+        </div>
+
+        <div class="input-box">
+            <input type="password" id="confirm" placeholder="Confirm Password" required>
+            <span class="icon">🔑</span>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+        <div class="register">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
+
+        <p id="msg" style="color:red;"></p>
+
+    </form>
+</div>
+
+<!-- 🔥 FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
+  authDomain: "weathernet-27dc9.firebaseapp.com",
+  projectId: "weathernet-27dc9",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.register = async function(e) {
+    e.preventDefault();
+
+    const lastname = document.getElementById("lastname").value;
+    const firstname = document.getElementById("firstname").value;
+    const middlename = document.getElementById("middlename").value;
+    const birthdate = document.getElementById("birthdate").value;
+    const gender = document.getElementById("gender").value;
+    const email = document.getElementById("email").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirm").value;
+    const msg = document.getElementById("msg");
+
+    if(password !== confirm){
+        msg.textContent = "Passwords do not match!";
+        return;
+    }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+            lastname,
+            firstname,
+            middlename,
+            birthdate,
+            gender,
+            email,
+            username
+        });
+
+        alert("Account created successfully!");
+        window.location.href = "login.html";
+
+    } catch (error) {
+        msg.textContent = error.message;
+    }
+};
+</script>
+
+<!-- 🌧️ ORIGINAL RAIN (UNCHANGED STYLE) -->
+<script>
+for(let i=0;i<100;i++){
+    let drop = document.createElement("div");
+    drop.className="rain";
+    drop.style.left=Math.random()*100+"vw";
+    drop.style.animationDuration=(Math.random()*1+0.5)+"s";
+    document.body.appendChild(drop);
+}
+
+/* ✨ ORIGINAL PARTICLES */
+for(let i=0;i<40;i++){
+    let particle=document.createElement("div");
+    particle.className="particle";
+    particle.style.left=Math.random()*100+"vw";
+    particle.style.bottom="-10px";
+    particle.style.animationDuration=(Math.random()*5+5)+"s";
+    document.body.appendChild(particle);
+}
+</script>
+
+</body>
+</html>

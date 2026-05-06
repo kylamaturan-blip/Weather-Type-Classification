@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Classification Dashboard</title>
+
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+
+/* ================= NASA BASE ================= */
+
+:root{
+    --bg:#050814;
+    --panel:rgba(255,255,255,0.06);
+    --panel2:rgba(255,255,255,0.03);
+    --accent:#00e5ff;
+    --accent2:#7c4dff;
+    --text:#e8f0ff;
+    --muted:rgba(232,240,255,0.6);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    background:radial-gradient(circle at top, #0b1230, #050814);
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+/* GRID OVERLAY (NASA FEEL) */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:60px 60px;
+    pointer-events:none;
+}
+
+/* ================= LAYOUT ================= */
+
+.dashboard{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:90px;
+    background:rgba(10,15,35,0.6);
+    backdrop-filter: blur(20px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:25px 0;
+    gap:20px;
+    border-right:1px solid rgba(0,229,255,0.1);
+}
+
+.sidebar i{
+    font-size:28px; /* gikan 22 → 28 */
+    color:var(--muted);
+    transition:0.3s;
+}
+
+.sidebar i:hover{
+    color:var(--accent);
+    transform:scale(1.2);
+}
+
+/* MAIN */
+.main-content{
+    flex:1;
+    padding:30px 40px;
+}
+
+/* TOPBAR */
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+
+.topbar input{
+    width:300px;
+    padding:12px 15px;
+    border-radius:30px;
+    border:1px solid rgba(0,229,255,0.2);
+    background:var(--panel2);
+    color:white;
+    outline:none;
+    backdrop-filter: blur(10px);
+}
+
+.clock{
+    color:var(--muted);
+}
+
+/* ================= GRID ================= */
+
+.grid-container{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:20px;
+}
+
+/* ================= CARDS ================= */
+
+.card{
+    background:var(--panel);
+    border:1px solid rgba(0,229,255,0.08);
+    border-radius:18px;
+    padding:20px;
+    backdrop-filter: blur(18px);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(0,229,255,0.25);
+}
+
+/* ================= MAIN CARD ================= */
+
+.large-card{
+    grid-row:span 2;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg, rgba(0,229,255,0.08), rgba(124,77,255,0.08));
+}
+
+.weather-type{
+    font-size:42px;
+    margin:10px 0;
+    letter-spacing:2px;
+    text-shadow:0 0 20px rgba(0,229,255,0.3);
+}
+
+/* PROGRESS */
+.progress-bar{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.08);
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-fill{
+    width:85%;
+    height:100%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    box-shadow:0 0 15px var(--accent);
+}
+
+/* KPI */
+.kpi-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.kpi-grid div{
+    background:rgba(255,255,255,0.04);
+    padding:12px;
+    border-radius:12px;
+    font-size:12px;
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+/* TODAY HIGHLIGHT */
+.highlight-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:15px;
+}
+
+.highlight-grid div{
+    background:rgba(255,255,255,0.04);
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+    border:1px solid rgba(0,229,255,0.08);
+}
+
+/* FORM */
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.form-grid input, .form-grid select{
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,0.04);
+    color:white;
+    outline:none;
+    border:1px solid rgba(255,255,255,0.06);
+}
+
+button{
+    margin-top:15px;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:black;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    box-shadow:0 0 20px rgba(0,229,255,0.4);
+    transform:scale(1.02);
+}
+
+.form-grid select{
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,0.04);
+    color:white;
+    outline:none;
+    border:1px solid rgba(255,255,255,0.06);
+
+    /* para parehas sa input */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width:100%;
+}
+
+.form-grid select{
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+/* MAIN SELECT (closed state) */
+.form-grid select{
+    background-color: rgba(255,255,255,0.04);
+    color: white;
+}
+
+/* DROPDOWN OPTIONS */
+.form-grid select option{
+    background-color: #0b1230; /* dark like your bg */
+    color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<i class='bx bx-table' onclick="openRecords()" title="Weather Records"></i>
+<i class='bx bx-history' onclick="showLastPrediction()" title="Last Prediction"></i>
+<i class='bx bx-shield' onclick="window.location.href='admin.html'" title="Admin"></i>
+
+<button onclick="logout()" style="
+margin-top:auto;
+padding:10px;
+font-size:12px;
+border-radius:10px;
+background:rgba(255,255,255,0.08);
+color:white;
+border:1px solid rgba(255,255,255,0.1);
+cursor:pointer;
+">
+Logout
+</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+<div class="topbar">
+<input placeholder="Search atmospheric data..." onkeypress="goSearch(event)">
+<div class="clock" id="clock"></div>
+</div>
+
+<div class="grid-container">
+
+<!-- MAIN PREDICTION -->
+<div class="card large-card">
+
+<h3>MISSION WEATHER STATUS</h3>
+
+<h1 class="weather-type" id="prediction">STABLE</h1>
+
+<p id="confidence">Confidence Level: </p>
+
+<div class="progress-bar">
+    <div class="progress-fill"></div>
+</div>
+
+<div class="kpi-grid">
+<div>Visibility: <span id="visibility"></span></div>
+<div>Humidity: <span id="humidity"></span></div>
+<div>Wind: <span id="wind"></span></div>
+<div>Pressure: <span id="pressure"></span></div>
+</div>
+
+</div>
+
+<!-- CARDS -->
+<div class="card">
+<h3>Current Conditions</h3>
+<h1 id="currentStatus">--</h1>
+<p style="font-size:12px;color:var(--muted);">Real-time weather state</p>
+</div>
+
+<div class="card">
+<h3>Last Prediction</h3>
+<h1 id="lastPrediction">--</h1>
+<p style="font-size:12px;color:var(--muted);">Previous classification result</p>
+</div>
+
+<!-- HIGHLIGHT -->
+<div class="card" style="grid-column:span 2;">
+<h3>TODAY'S ORBITAL CONDITIONS</h3>
+
+<div class="highlight-grid">
+
+<div>
+<p>UV</p>
+<h2 id="uv"></h2>
+</div>
+
+<div>
+<p>Humidity</p>
+<h2 id="humidity2"></h2>
+</div>
+
+<div>
+<p>Wind</p>
+<h2 id="wind2"></h2>
+</div>
+
+<div>
+<p>Pressure</p>
+<h2 id="pressure2"></h2>
+</div>
+
+</div>
+
+</div>
+
+<!-- FORM -->
+<div class="card" style="grid-column:span 3;">
+<h3>CLASSIFY WEATHER</h3>
+
+<div class="form-grid">
+<input id="f_temp" placeholder="Temp">
+<input id="f_humidity" placeholder="Humidity">
+<input id="f_wind" placeholder="Wind">
+<input id="f_precip" placeholder="Precip">
+
+
+<select id="f_cloud">
+<label>Cloud Cover</label>
+<option value="" disabled selected hidden>Cloud Cover</option>
+<option>Clear</option>
+<option>Cloudy</option>
+<option>Overcast</option>
+<option>Partly Cloudy</option>
+</select>
+
+<input id="f_pressure" placeholder="Pressure">
+<input id="f_uv" placeholder="UV">
+<input id="f_visibility" placeholder="Visibility">
+
+<select id="f_location">
+    <label>Location</label>
+    <option value="" disabled selected hidden>Location</option>
+    <option>Inland</option>
+    <option>Mountain</option>
+    <option>Coastal</option>
+</select>
+
+<select id="f_season">
+    <label>Season</label>
+    <option value="" disabled selected hidden>Season</option>
+    <option>Summer</option>
+    <option>Winter</option>
+    <option>Spring</option>
+    <option>Autumn</option>
+</select>
+</div>
+
+<button onclick="predictWeather()">CLASSIFY</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* CLOCK */
+setInterval(()=>{
+document.getElementById("clock").innerText =
+new Date().toLocaleString();
+},1000);
+
+/* FIXED FUNCTION (BACKEND + UI UPDATE) */
+function predictWeather(){
+
+let data = {
+    temp: Number(document.getElementById("f_temp").value) || 0,
+    humidity: Number(document.getElementById("f_humidity").value) || 0,
+    wind: Number(document.getElementById("f_wind").value) || 0,
+    precip: Number(document.getElementById("f_precip").value) || 0,
+    cloud: document.getElementById("f_cloud").value,
+    pressure: Number(document.getElementById("f_pressure").value) || 0,
+    uv: Number(document.getElementById("f_uv").value) || 0,
+    visibility: Number(document.getElementById("f_visibility").value) || 0,
+    location: document.getElementById("f_location").value,
+    season: document.getElementById("f_season").value
+};
+
+/* LOADING STATE */
+document.getElementById("prediction").innerText = "ANALYZING...";
+document.getElementById("confidence").innerText = "Processing data...";
+
+/* FETCH (ONLY ONE .catch) */
+fetch('http://127.0.0.1:5000/predict', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(res => {
+    saveToFirebase(data, res);
+
+    // Current condition (same sa prediction)
+    document.getElementById("currentStatus").innerText = res.weather_type;
+
+// Save last prediction
+    document.getElementById("lastPrediction").innerText = res.weather_type;
+    localStorage.setItem("lastPrediction", res.weather_type);
+
+    /* UPDATE MAIN OUTPUT */
+    document.getElementById("prediction").innerText = res.weather_type;
+    document.getElementById("confidence").innerText =
+        "Confidence Level: " + res.confidence + "%";
+
+    let bar = document.querySelector(".progress-fill");
+
+// adjust width
+bar.style.width = res.confidence + "%";
+
+// change color based on confidence
+if(res.confidence < 50){
+    bar.style.background = "red";
+}else if(res.confidence < 80){
+    bar.style.background = "orange";
+}else{
+    bar.style.background = "linear-gradient(90deg,#00e5ff,#7c4dff)";
+}
+
+    /* UPDATE EXISTING UI VALUES (NO DESIGN CHANGE) */
+    document.getElementById("humidity").innerText = data.humidity + "%";
+    document.getElementById("wind").innerText = data.wind + " km/h";
+    document.getElementById("pressure").innerText = data.pressure + " hPa";
+    document.getElementById("visibility").innerText = data.visibility + " km";
+
+    document.getElementById("humidity2").innerText = data.humidity + "%";
+    document.getElementById("wind2").innerText = data.wind + " km/h";
+    document.getElementById("pressure2").innerText = data.pressure + " hPa";
+
+    document.getElementById("uv").innerText = data.uv;
+
+})
+.catch(() => {
+    document.getElementById("prediction").innerText = "⚠ ERROR";
+    document.getElementById("confidence").innerText = "Backend not connected";
+});
+
+}
+</script>
+
+<script>
+function focusField(fieldId){
+    let el = document.getElementById(fieldId);
+
+    if(el){
+        el.focus();
+
+        // smooth scroll padulong sa form
+        el.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        // glow effect (NASA style)
+        el.style.border = "1px solid #00e5ff";
+        el.style.boxShadow = "0 0 10px rgba(0,229,255,0.5)";
+
+        setTimeout(()=>{
+            el.style.border = "1px solid rgba(255,255,255,0.06)";
+            el.style.boxShadow = "none";
+        },1500);
+    }
+}
+</script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
+  authDomain: "weathernet-27dc9.firebaseapp.com",
+  projectId: "weathernet-27dc9",
+  storageBucket: "weathernet-27dc9.firebasestorage.app",
+  messagingSenderId: "178207562733",
+  appId: "1:178207562733:web:99e3ed4018873a4efc65e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// GLOBAL FUNCTION para magamit sa predictWeather
+window.saveToFirebase = async (data, res) => {
+  try {
+    await addDoc(collection(db, "weather_logs"), {
+      ...data,
+      result: res.weather_type,
+      confidence: res.confidence,
+      timestamp: new Date()
+    });
+    console.log("Saved to Firebase");
+  } catch (e) {
+    console.error("Error saving:", e);
+  }
+};
+</script>
+
+<script>
+function logout(){
+    // Clear session (if naa kay login system)
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to login page
+    window.location.href = "login_register.html";
+}
+</script>
+
+<script>
+
+// 📊 SHOW FIREBASE LOGS
+async function showLogs(){
+    alert("Fetching weather data logs... (check console)");
+
+    const q = await getDocs(collection(db, "weather_logs"));
+    let logs = [];
+
+    q.forEach(doc => {
+        logs.push(doc.data());
+    });
+
+    console.table(logs);
+}
+
+
+// 🧠 MODEL INSIGHTS (STATIC FOR NOW - pwede i-connect sa backend)
+function showAccuracy(){
+    document.querySelector(".card h1").innerText = "92%";
+    alert("Model Accuracy: 92%");
+}
+
+
+// 🌦 FOCUS SA CLASSIFICATION FORM
+function focusClassification(){
+    document.getElementById("f_temp").scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+}
+
+
+// 📈 SHOW RECENT PREDICTIONS
+async function showRecent(){
+
+    const q = await getDocs(collection(db, "weather_logs"));
+    let latest = [];
+
+    q.forEach(doc => {
+        latest.push(doc.data());
+    });
+
+    latest = latest.slice(-5);
+
+    let msg = "Recent Predictions:\n\n";
+
+    latest.forEach(item => {
+        msg += item.result + " (" + item.confidence + "%)\n";
+    });
+
+    alert(msg);
+}
+</script>
+
+<script>
+
+// 🧠 MODEL INFO
+function showModelInfo(){
+    alert("Model Accuracy: 92%");
+}
+
+// ☁ AUTO FILL DEMO DATA
+function fillDemoData(){
+    document.getElementById("f_temp").value = 30;
+    document.getElementById("f_humidity").value = 70;
+    document.getElementById("f_wind").value = 15;
+    document.getElementById("f_precip").value = 10;
+    document.getElementById("f_pressure").value = 1010;
+    document.getElementById("f_uv").value = 6;
+    document.getElementById("f_visibility").value = 10;
+
+    document.getElementById("f_cloud").value = "Clear";
+    document.getElementById("f_location").value = "Urban";
+    document.getElementById("f_season").value = "Summer";
+}
+
+// ⏱ LAST PREDICTION
+function showLastPrediction(){
+    let pred = document.getElementById("prediction").innerText;
+    let conf = document.getElementById("confidence").innerText;
+
+    alert("Last Prediction: " + pred + "\n" + conf);
+}
+
+</script>
+
+<script>
+function openRecords(){
+    window.location.href = "records.html";
+}
+</script>
+
+<script>
+
+// 🧭 OPEN RECORDS PAGE
+function openRecords(){
+    window.location.href = "records.html";
+}
+
+// ⏱ LAST PREDICTION (existing but keep)
+function showLastPrediction(){
+    let pred = document.getElementById("prediction").innerText;
+    let conf = document.getElementById("confidence").innerText;
+
+    alert("Last Prediction: " + pred + "\n" + conf);
+}
+
+</script>
+
+<script>
+function goSearch(e){
+    if(e.key === "Enter"){
+        let value = e.target.value;
+        window.location.href = "records.html?search=" + value;
+    }
+}
+</script>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    let last = localStorage.getItem("lastPrediction");
+
+    if(last){
+        document.getElementById("lastPrediction").innerText = last;
+    }
+});
+</script>
+</body>
+</html>

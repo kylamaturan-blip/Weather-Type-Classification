@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeatherNet Intelligence</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="shortcut icon" href="favicon.png" type="image/png">
+</head>
+
+<body>
+
+<!-- Clouds -->
+<img class="cloud" src="https://cdn-icons-png.flaticon.com/512/414/414825.png" style="top:15%;">
+<img class="cloud" src="https://cdn-icons-png.flaticon.com/512/414/414927.png" style="top:65%; animation-delay:10s;">
+
+<!-- ABOUT SECTION -->
+<section class="about-section">
+
+    <h2 class="section-title">Why WeatherNet Intelligence?</h2>
+
+    <p class="about-description">
+        WeatherNet Intelligence is a data-driven weather classification system designed to transform 
+        multi-variable atmospheric data into meaningful predictive insights. By leveraging environmental 
+        parameters such as temperature, humidity, wind speed, and pressure, the system applies intelligent 
+        modeling techniques to accurately classify weather conditions and support data-informed decisions.
+    </p>
+
+    <div class="benefits-grid">
+
+        <div class="benefit-card">
+            <h3>🌦 Multi-Parameter Analysis</h3>
+            <p>
+                Integrates multiple atmospheric variables including temperature, humidity, wind speed, 
+                and pressure to provide a comprehensive representation of environmental conditions.
+            </p>
+        </div>
+
+        <div class="benefit-card">
+            <h3>📊 Structured Data Visualization</h3>
+            <p>
+                Converts complex weather datasets into clear, interactive visual outputs that enhance 
+                interpretation and analytical understanding.
+            </p>
+        </div>
+
+        <div class="benefit-card">
+            <h3>🔐 Secure User Environment</h3>
+            <p>
+                Provides protected system access with personalized dashboards for efficient interaction 
+                with weather datasets and classification results.
+            </p>
+        </div>
+
+        <div class="benefit-card">
+            <h3>⚡ Machine Learning Classification</h3>
+            <p>
+                Utilizes trained models to classify weather conditions into categories such as 
+                Rainy, Sunny, Cloudy, and Snowy with high consistency and accuracy.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+
+    <h2>Transform Data into Forecast Intelligence.</h2>
+
+    <p>
+        Explore, analyze, and classify weather conditions through a structured dataset-driven system 
+        designed for accuracy, clarity, and predictive performance.
+    </p>
+
+    <div class="landing-buttons">
+        <a href="login.php" class="landing-btn primary">Access System</a>
+        <a href="register.php" class="landing-btn secondary">Create Account</a>
+    </div>
+
+    <div class="footer">© 2026 WeatherNet Intelligence System</div>
+
+</section>
+
+<!-- FEATURES TABLE -->
+<section class="features-landscape">
+
+    <h2 class="features-title">System Capabilities Overview</h2>
+
+    <table class="features-table">
+        <tr>
+            <th>Feature</th>
+            <th>Description</th>
+            <th>Technology Used</th>
+            <th>Status</th>
+        </tr>
+
+        <tr>
+            <td>🌦 Data Acquisition</td>
+            <td>Processes multi-variable weather attributes including temperature, humidity, wind speed, and pressure.</td>
+            <td>Dataset Integration</td>
+            <td>Active</td>
+        </tr>
+
+        <tr>
+            <td>⚡ Weather Classification</td>
+            <td>Classifies weather into predefined categories using trained machine learning models.</td>
+            <td>Machine Learning Algorithm</td>
+            <td>Active</td>
+        </tr>
+
+        <tr>
+            <td>📊 Data Visualization</td>
+            <td>Presents structured insights and trends through interactive graphical representations.</td>
+            <td>JavaScript Charts</td>
+            <td>Active</td>
+        </tr>
+
+        <tr>
+            <td>🔐 User Authentication</td>
+            <td>Ensures secure login, registration, and controlled system access.</td>
+            <td>LocalStorage Authentication</td>
+            <td>Secured</td>
+        </tr>
+    </table>
+
+</section>
+
+<script>
+
+/* Rain Animation */
+for(let i=0;i<100;i++){
+    let drop=document.createElement("div");
+    drop.className="rain";
+    drop.style.left=Math.random()*100+"vw";
+    drop.style.animationDuration=(Math.random()*1+0.5)+"s";
+    document.body.appendChild(drop);
+}
+
+/* Floating Particles */
+for(let i=0;i<40;i++){
+    let particle=document.createElement("div");
+    particle.className="particle";
+    particle.style.left=Math.random()*100+"vw";
+    particle.style.bottom="-10px";
+    particle.style.animationDuration=(Math.random()*5+5)+"s";
+    document.body.appendChild(particle);
+}
+
+</script>
+
+</body>
+</html>
