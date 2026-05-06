@@ -196,8 +196,13 @@ thead th{
     <div class="nav-item" onclick="showPage('auditPage',this)">
         <i class='bx bx-file'></i> Audit Trail
     </div>
-</div>
 
+    <!-- ✅ LOGOUT MUST BE INSIDE SIDEBAR -->
+    <div class="nav-item" onclick="logoutAdmin()">
+        <i class='bx bx-log-out'></i> Logout
+    </div>
+
+</div>
 <!-- MAIN -->
 <div class="main">
 
@@ -242,7 +247,12 @@ thead th{
 <div class="card">
 <h3>User Management</h3>
 <table>
-<thead><tr><th>Email</th><th>Role</th></tr></thead>
+<thead>
+<tr>
+    <th>Email</th>
+    <th>Actions</th>
+</tr>
+</thead>
 <tbody id="userTable"></tbody>
 </table>
 </div>
@@ -272,14 +282,14 @@ thead th{
 </div>
 </div>
 
-</div>
+
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
   authDomain: "weathernet-27dc9.firebaseapp.com",
@@ -334,6 +344,8 @@ onSnapshot(logQ,(snap)=>{
 });
 
 /* USERS */
+import { doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 onSnapshot(collection(db,"users"),(snap)=>{
     let table=document.getElementById("userTable");
     table.innerHTML="";
@@ -341,10 +353,14 @@ onSnapshot(collection(db,"users"),(snap)=>{
 
     snap.forEach(d=>{
         let u=d.data();
+
         table.innerHTML+=`
         <tr>
         <td>${u.email}</td>
-        <td>${u.role||"user"}</td>
+        <td>
+            <button onclick="editUser('${d.id}')" style="margin-right:5px;">Edit</button>
+            <button onclick="deleteUser('${d.id}')">Delete</button>
+        </td>
         </tr>`;
     });
 });
@@ -377,7 +393,31 @@ onSnapshot(collection(db,"audit_logs"),(snap)=>{
         count++;
     });
 });
+
+window.deleteUser = async (id) => {
+    if(confirm("Are you sure you want to delete this user?")){
+        await deleteDoc(doc(db,"users",id));
+        alert("User deleted");
+    }
+};
+
+window.editUser = async (id) => {
+    let newEmail = prompt("Enter new email:");
+
+    if(newEmail){
+        await updateDoc(doc(db,"users",id),{
+            email:newEmail
+        });
+        alert("User updated");
+    }
+};
+
+window.logoutAdmin = async () => {
+    await signOut(auth);
+    window.location.href = "login_register.html";
+};
 </script>
+
 
 </body>
 </html>
