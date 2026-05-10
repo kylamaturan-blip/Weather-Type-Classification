@@ -9,7 +9,6 @@
 <link rel="icon" type="image/x-icon" href="favicon.png">
 <style>
 
-/* ===== GLOBAL ===== */
 body{
     margin:0;
     font-family:'Inter', sans-serif;
@@ -21,7 +20,6 @@ body{
     height:100vh;
 }
 
-/* GRID BACKGROUND */
 body::before{
     content:"";
     position:fixed;
@@ -32,7 +30,6 @@ body::before{
     background-size:60px 60px;
 }
 
-/* ===== MAIN BOX ===== */
 .container{
     width: 90%;
     max-width: 720px;
@@ -45,7 +42,6 @@ body::before{
     border:1px solid rgba(0,229,255,0.15);
 }
 
-/* ===== LEFT ===== */
 .left{
     width:45%;
     background: linear-gradient(160deg,#021b2f,#0b3a53);
@@ -97,13 +93,11 @@ body::before{
     width:70%;
 }
 
-/* TITLE */
 .form-box h2{
     margin-bottom:20px;
     color:#00e5ff;
 }
 
-/* INPUT */
 .input-group{
     margin-bottom:15px;
 }
@@ -122,7 +116,6 @@ body::before{
     border-color:#00e5ff;
 }
 
-/* BUTTON */
 .btn{
     width:100%;
     padding:12px;
@@ -139,7 +132,6 @@ body::before{
     transform:scale(1.05);
 }
 
-/* SWITCH TEXT */
 .toggle{
     margin-top:10px;
     font-size:13px;
@@ -148,12 +140,9 @@ body::before{
     cursor:pointer;
 }
 
-/* HIDDEN */
 #registerForm{
     display:none;
 }
-
-
 
 </style>
 </head>
@@ -162,7 +151,6 @@ body::before{
 
 <div class="container">
 
-    <!-- LEFT PANEL -->
     <div class="left">
         <h2>Welcome to WeatherNet</h2>
         <p>
@@ -172,11 +160,9 @@ body::before{
         <button onclick="toggleForm()">Create Account</button>
     </div>
 
-    <!-- RIGHT PANEL -->
     <div class="right">
         <div class="form-box">
 
-            <!-- LOGIN -->
             <form id="loginForm" autocomplete="off">
                 <h2>Login</h2>
 
@@ -199,7 +185,6 @@ body::before{
                 </div>
             </form>
 
-            <!-- REGISTER -->
             <form id="registerForm" autocomplete="off">
                 <h2>Register</h2>
 
@@ -228,7 +213,6 @@ body::before{
 </div>
 
 <script>
-// toggle login/register
 function toggleForm(){
     const login = document.getElementById("loginForm");
     const register = document.getElementById("registerForm");
@@ -243,7 +227,6 @@ function toggleForm(){
 }
 </script>
 
-<!-- 🔥 FIREBASE (SA ILALOM JUD) -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -267,7 +250,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* CLEAR INPUTS */
 window.onload = () => {
   document.getElementById("loginEmail").value = "";
   document.getElementById("loginPassword").value = "";
@@ -276,7 +258,6 @@ window.onload = () => {
   document.getElementById("regPassword").value = "";
 };
 
-/* REGISTER */
 document.getElementById("registerForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
 
@@ -292,11 +273,10 @@ document.getElementById("registerForm").addEventListener("submit", async (e)=>{
   try{
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
-    // SAVE USER DATA SA FIRESTORE
     await setDoc(doc(db, "users", userCred.user.uid), {
     name: name,
     email: email,
-    role: "user", // ✅ ADD THIS LINE
+    role: "user", 
     createdAt: new Date()
     });
 
@@ -308,7 +288,6 @@ document.getElementById("registerForm").addEventListener("submit", async (e)=>{
   }
 });
 
-/* LOGIN */
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
 
