@@ -276,7 +276,7 @@ button:hover{
 <div class="sidebar">
 <i class='bx bx-table' onclick="openRecords()" title="Weather Records"></i>
 <i class='bx bx-history' onclick="showLastPrediction()" title="Last Prediction"></i>
-<i class='bx bx-shield' onclick="window.location.href='admin.html'" title="Admin"></i>
+<i class='bx bx-shield' onclick="openAdmin()" title="Admin"></i>
 
 <button onclick="logout()" style="
 margin-top:auto;
@@ -454,9 +454,11 @@ fetch('http://127.0.0.1:5000/predict', {
     body: JSON.stringify(data)
 })
 .then(res => res.json())
-.then(res => {
-    saveToFirebase(data, res);
+.then(async res => {
 
+    console.log(res);
+
+    await saveToFirebase(data, res);
     // Current condition (same sa prediction)
     document.getElementById("currentStatus").innerText = res.weather_type;
 
@@ -545,20 +547,47 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+window.db = db;
+window.getDocs = getDocs;
+window.collection = collection;
 
 // GLOBAL FUNCTION para magamit sa predictWeather
 window.saveToFirebase = async (data, res) => {
+
   try {
+    console.log("SAVING:", {
+    result: res.weather_type,
+    confidence: res.confidence
+});
+
     await addDoc(collection(db, "weather_logs"), {
-      ...data,
-      result: res.weather_type,
-      confidence: res.confidence,
-      timestamp: new Date()
+
+      location: data.location || "",
+      temp: data.temp || 0,
+      humidity: data.humidity || 0,
+      wind: data.wind || 0,
+      precip: data.precip || 0,
+      cloud: data.cloud || "",
+      pressure: data.pressure || 0,
+      uv: data.uv || 0,
+      visibility: data.visibility || 0,
+      season: data.season || "",
+
+      result: res.weather_type || "Unknown",
+      confidence: res.confidence || 0,
+
+      timestamp: Date.now()
+
     });
-    console.log("Saved to Firebase");
+
+    console.log("✅ Saved to Firebase");
+
   } catch (e) {
-    console.error("Error saving:", e);
+
+    console.error("❌ Firebase Error:", e);
+
   }
+
 };
 </script>
 
@@ -685,10 +714,16 @@ function showLastPrediction(){
 
 <script>
 function goSearch(e){
+
     if(e.key === "Enter"){
-        let value = e.target.value;
-        window.location.href = "records.html?search=" + value;
+
+        let value = e.target.value.trim().toLowerCase();
+
+        window.location.href =
+        "records.html?search=" + encodeURIComponent(value);
+
     }
+
 }
 </script>
 
@@ -700,6 +735,17 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("lastPrediction").innerText = last;
     }
 });
+</script>
+<script>
+function openAdmin(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "admin.html";
+    } else {
+        alert("Admin only ni siya. Access denied.");
+    }
+}
 </script>
 </body>
 </html>
