@@ -11,8 +11,6 @@
 
 <style>
 
-/* ================= NASA BASE ================= */
-
 :root{
     --bg:#050814;
     --panel:rgba(255,255,255,0.06);
@@ -36,7 +34,6 @@ body{
     overflow-x:hidden;
 }
 
-/* GRID OVERLAY (NASA FEEL) */
 body::before{
     content:"";
     position:fixed;
@@ -47,9 +44,7 @@ body::before{
     background-size:60px 60px;
     pointer-events:none;
 }
-
-/* ================= LAYOUT ================= */
-
+    
 .dashboard{
     display:flex;
     min-height:100vh;
@@ -107,7 +102,6 @@ body::before{
     color:var(--muted);
 }
 
-/* ================= GRID ================= */
 
 .grid-container{
     display:grid;
@@ -115,7 +109,6 @@ body::before{
     gap:20px;
 }
 
-/* ================= CARDS ================= */
 
 .card{
     background:var(--panel);
@@ -131,7 +124,6 @@ body::before{
     border-color:rgba(0,229,255,0.25);
 }
 
-/* ================= MAIN CARD ================= */
 
 .large-card{
     grid-row:span 2;
@@ -425,7 +417,6 @@ document.getElementById("clock").innerText =
 new Date().toLocaleString();
 },1000);
 
-/* FIXED FUNCTION (BACKEND + UI UPDATE) */
 function predictWeather(){
 
 let data = {
@@ -441,11 +432,9 @@ let data = {
     season: document.getElementById("f_season").value
 };
 
-/* LOADING STATE */
 document.getElementById("prediction").innerText = "ANALYZING...";
 document.getElementById("confidence").innerText = "Processing data...";
 
-/* FETCH (ONLY ONE .catch) */
 fetch('http://127.0.0.1:5000/predict', {
     method: 'POST',
     headers: {
@@ -485,7 +474,6 @@ if(res.confidence < 50){
     bar.style.background = "linear-gradient(90deg,#00e5ff,#7c4dff)";
 }
 
-    /* UPDATE EXISTING UI VALUES (NO DESIGN CHANGE) */
     document.getElementById("humidity").innerText = data.humidity + "%";
     document.getElementById("wind").innerText = data.wind + " km/h";
     document.getElementById("pressure").innerText = data.pressure + " hPa";
@@ -551,7 +539,6 @@ window.db = db;
 window.getDocs = getDocs;
 window.collection = collection;
 
-// GLOBAL FUNCTION para magamit sa predictWeather
 window.saveToFirebase = async (data, res) => {
 
   try {
@@ -604,7 +591,6 @@ function logout(){
 
 <script>
 
-// 📊 SHOW FIREBASE LOGS
 async function showLogs(){
     alert("Fetching weather data logs... (check console)");
 
@@ -619,14 +605,12 @@ async function showLogs(){
 }
 
 
-// 🧠 MODEL INSIGHTS (STATIC FOR NOW - pwede i-connect sa backend)
 function showAccuracy(){
     document.querySelector(".card h1").innerText = "92%";
     alert("Model Accuracy: 92%");
 }
 
 
-// 🌦 FOCUS SA CLASSIFICATION FORM
 function focusClassification(){
     document.getElementById("f_temp").scrollIntoView({
         behavior:"smooth",
@@ -635,7 +619,6 @@ function focusClassification(){
 }
 
 
-// 📈 SHOW RECENT PREDICTIONS
 async function showRecent(){
 
     const q = await getDocs(collection(db, "weather_logs"));
@@ -659,12 +642,10 @@ async function showRecent(){
 
 <script>
 
-// 🧠 MODEL INFO
 function showModelInfo(){
     alert("Model Accuracy: 92%");
 }
 
-// ☁ AUTO FILL DEMO DATA
 function fillDemoData(){
     document.getElementById("f_temp").value = 30;
     document.getElementById("f_humidity").value = 70;
@@ -679,7 +660,6 @@ function fillDemoData(){
     document.getElementById("f_season").value = "Summer";
 }
 
-// ⏱ LAST PREDICTION
 function showLastPrediction(){
     let pred = document.getElementById("prediction").innerText;
     let conf = document.getElementById("confidence").innerText;
@@ -697,12 +677,10 @@ function openRecords(){
 
 <script>
 
-// 🧭 OPEN RECORDS PAGE
 function openRecords(){
     window.location.href = "records.html";
 }
 
-// ⏱ LAST PREDICTION (existing but keep)
 function showLastPrediction(){
     let pred = document.getElementById("prediction").innerText;
     let conf = document.getElementById("confidence").innerText;
