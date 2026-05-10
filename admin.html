@@ -192,11 +192,7 @@ thead th{
     <div class="nav-item" onclick="showPage('logsPage',this)">
         <i class='bx bx-cloud'></i> Weather Logs
     </div>
-
-    <div class="nav-item" onclick="showPage('auditPage',this)">
-        <i class='bx bx-file'></i> Audit Trail
-    </div>
-
+    
     <!-- ✅ LOGOUT MUST BE INSIDE SIDEBAR -->
     <div class="nav-item" onclick="logoutAdmin()">
         <i class='bx bx-log-out'></i> Logout
@@ -234,9 +230,8 @@ thead th{
 </div>
 
 </div>
-
 <div class="activity">
-<h3>System Activity</h3>
+<h3>Recent Weather Predictions</h3>
 <div id="activityList"></div>
 </div>
 
@@ -271,16 +266,7 @@ thead th{
 </div>
 </div>
 
-<!-- AUDIT -->
-<div id="auditPage" class="page">
-<div class="card">
-<h3>Audit Trail</h3>
-<table>
-<thead><tr><th>Action</th><th>Time</th></tr></thead>
-<tbody id="auditTable"></tbody>
-</table>
-</div>
-</div>
+
 
 
 
@@ -365,34 +351,40 @@ onSnapshot(collection(db,"users"),(snap)=>{
     });
 });
 
-/* AUDIT + ACTIVITY */
-onSnapshot(collection(db,"audit_logs"),(snap)=>{
-    let table=document.getElementById("auditTable");
+/* RECENT WEATHER ACTIVITY */
+onSnapshot(logQ,(snap)=>{
+
     let activity=document.getElementById("activityList");
 
-    table.innerHTML="";
     activity.innerHTML="";
 
     let count=0;
 
     snap.forEach(d=>{
-        let a=d.data();
 
-        table.innerHTML+=`
-        <tr>
-        <td>${a.action}</td>
-        <td>${a.time}</td>
-        </tr>`;
+        let data=d.data();
 
-        if(count<5){
-            activity.innerHTML+=`
+        if(count < 5){
+
+            activity.innerHTML += `
             <div class="activity-item">
-            • ${a.action}<br><small>${a.time}</small>
-            </div>`;
+            • ${data.result} prediction detected
+            <br>
+            <small>
+            Temp: ${data.temp}°C | 
+            Humidity: ${data.humidity}% |
+            Confidence: ${data.confidence}%
+            </small>
+            </div>
+            `;
         }
+
         count++;
     });
+
 });
+
+
 
 window.deleteUser = async (id) => {
     if(confirm("Are you sure you want to delete this user?")){
