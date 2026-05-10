@@ -104,12 +104,19 @@ button{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+    getFirestore,
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyCOuRxcty7SO6qHN47yLYyqtKCZWgHhyfA",
   authDomain: "weathernet-27dc9.firebaseapp.com",
   projectId: "weathernet-27dc9",
+  storageBucket: "weathernet-27dc9.firebasestorage.app",
+  messagingSenderId: "178207562733",
+  appId: "1:178207562733:web:99e3ed4018873a4efc65e4"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -126,10 +133,21 @@ q.forEach(doc=>{
     let d = doc.data();
 
     // 🔍 FILTER LOGIC
-    if(searchValue && d.result.toLowerCase() !== searchValue){
+    let resultText = String(d.result || "")
+.trim()
+.toLowerCase();
+
+let searchText = searchValue
+.trim()
+.toLowerCase();
+
+console.log("SEARCH:", searchText);
+console.log("RESULT:", resultText);
+
+if(searchText && !resultText.includes(searchText)){
     return;
-    }
-    let cls = d.result?.toLowerCase() || "sunny";
+}
+    let cls = (d.result || "sunny").toLowerCase();
 
     rows += `
     <tr>
